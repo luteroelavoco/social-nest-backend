@@ -4,6 +4,7 @@ import { TradeProposalsService } from './trade-proposals.service';
 import { CreateTradeProposalDto } from './dto/create-trade-proposal.dto';
 import mongoose from 'mongoose';
 import { HttpException } from '@nestjs/common';
+import { ActiveTradeProposalDto } from './dto/active-trade-proposal.dto';
 
 describe('TradeProposalsController', () => {
   let tradeProposalsController: TradeProposalsController;
@@ -212,5 +213,26 @@ describe('TradeProposalsController', () => {
       expect(error.message).toBe('Proposal not found or already rejected.');
       expect(error.getStatus()).toBe(404);
     }
+  });
+
+  it('should get active trade proposal ', async () => {
+    const activeTradeProposalDto: ActiveTradeProposalDto = {
+      offeredBook: new mongoose.Types.ObjectId('64ed5ca2ad8c77293882972e'),
+      desiredBook: new mongoose.Types.ObjectId('64e98701d44efc6f455c4fb3'),
+      fromUser: new mongoose.Types.ObjectId('64b95781dc3fb7f79e6bb5b0'),
+      toUser: new mongoose.Types.ObjectId('64b95781dc3fb7f79e6bb5b0'),
+    };
+
+    jest
+      .spyOn(tradeProposalsService, 'getActiveTradeProposal')
+      .mockImplementation(() => createdProposal as any);
+
+    const result = await tradeProposalsService.getActiveTradeProposal(
+      activeTradeProposalDto,
+    );
+    expect(result).toBe(createdProposal);
+    expect(tradeProposalsService.getActiveTradeProposal).toHaveBeenCalledWith(
+      expect.objectContaining(activeTradeProposalDto),
+    );
   });
 });
