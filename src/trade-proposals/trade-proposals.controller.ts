@@ -77,11 +77,11 @@ export class TradeProposalsController {
   async rejectTradeProposals(
     @Param('proposalId') proposalId: mongoose.Types.ObjectId,
   ) {
-    const acceptedProposal =
+    const rejectedProposal =
       await this.tradeProposalsService.rejectTradeProposal(proposalId);
-    if (!acceptedProposal) {
+    if (!rejectedProposal) {
       throw new HttpException('Proposal not found or already rejected.', 404);
     }
-    return acceptedProposal;
+    return rejectedProposal;
   }
 }
